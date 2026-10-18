@@ -1,0 +1,914 @@
+[
+{
+"n": 1,
+"name": "Аль-Фатиха",
+"meaning": "Открывающая",
+"arabic": "الفاتحة",
+"ayahs": 7,
+"type": "meccan"
+},
+{
+"n": 2,
+"name": "Аль-Бакара",
+"meaning": "Корова",
+"arabic": "البقرة",
+"ayahs": 286,
+"type": "medinan"
+},
+{
+"n": 3,
+"name": "Аль Имран",
+"meaning": "Семейство Имрана",
+"arabic": "آل عمران",
+"ayahs": 200,
+"type": "medinan"
+},
+{
+"n": 4,
+"name": "Ан-Ниса",
+"meaning": "Женщины",
+"arabic": "النساء",
+"ayahs": 176,
+"type": "medinan"
+},
+{
+"n": 5,
+"name": "Аль-Маида",
+"meaning": "Трапеза",
+"arabic": "المائدة",
+"ayahs": 120,
+"type": "medinan"
+},
+{
+"n": 6,
+"name": "Аль-Анам",
+"meaning": "Скот",
+"arabic": "الأنعام",
+"ayahs": 165,
+"type": "meccan"
+},
+{
+"n": 7,
+"name": "Аль-Араф",
+"meaning": "Преграды",
+"arabic": "الأعراف",
+"ayahs": 206,
+"type": "meccan"
+},
+{
+"n": 8,
+"name": "Аль-Анфаль",
+"meaning": "Трофеи",
+"arabic": "الأنفال",
+"ayahs": 75,
+"type": "medinan"
+},
+{
+"n": 9,
+"name": "Ат-Тауба",
+"meaning": "Покаяние",
+"arabic": "التوبة",
+"ayahs": 129,
+"type": "medinan"
+},
+{
+"n": 10,
+"name": "Юнус",
+"meaning": "Юнус",
+"arabic": "يونس",
+"ayahs": 109,
+"type": "meccan"
+},
+{
+"n": 11,
+"name": "Худ",
+"meaning": "Худ",
+"arabic": "هود",
+"ayahs": 123,
+"type": "meccan"
+},
+{
+"n": 12,
+"name": "Юсуф",
+"meaning": "Юсуф",
+"arabic": "يوسف",
+"ayahs": 111,
+"type": "meccan"
+},
+{
+"n": 13,
+"name": "Ар-Рад",
+"meaning": "Гром",
+"arabic": "الرعد",
+"ayahs": 43,
+"type": "medinan"
+},
+{
+"n": 14,
+"name": "Ибрахим",
+"meaning": "Ибрахим",
+"arabic": "ابراهيم",
+"ayahs": 52,
+"type": "meccan"
+},
+{
+"n": 15,
+"name": "Аль-Хиджр",
+"meaning": "Аль-Хиджр",
+"arabic": "الحجر",
+"ayahs": 99,
+"type": "meccan"
+},
+{
+"n": 16,
+"name": "Ан-Нахль",
+"meaning": "Пчёлы",
+"arabic": "النحل",
+"ayahs": 128,
+"type": "meccan"
+},
+{
+"n": 17,
+"name": "Аль-Исра",
+"meaning": "Ночной перенос",
+"arabic": "الإسراء",
+"ayahs": 111,
+"type": "meccan"
+},
+{
+"n": 18,
+"name": "Аль-Кахф",
+"meaning": "Пещера",
+"arabic": "الكهف",
+"ayahs": 110,
+"type": "meccan"
+},
+{
+"n": 19,
+"name": "Марьям",
+"meaning": "Марьям",
+"arabic": "مريم",
+"ayahs": 98,
+"type": "meccan"
+},
+{
+"n": 20,
+"name": "Та Ха",
+"meaning": "Та Ха",
+"arabic": "طه",
+"ayahs": 135,
+"type": "meccan"
+},
+{
+"n": 21,
+"name": "Аль-Анбия",
+"meaning": "Пророки",
+"arabic": "الأنبياء",
+"ayahs": 112,
+"type": "meccan"
+},
+{
+"n": 22,
+"name": "Аль-Хаджж",
+"meaning": "Паломничество",
+"arabic": "الحج",
+"ayahs": 78,
+"type": "medinan"
+},
+{
+"n": 23,
+"name": "Аль-Муминун",
+"meaning": "Верующие",
+"arabic": "المؤمنون",
+"ayahs": 118,
+"type": "meccan"
+},
+{
+"n": 24,
+"name": "Ан-Нур",
+"meaning": "Свет",
+"arabic": "النور",
+"ayahs": 64,
+"type": "medinan"
+},
+{
+"n": 25,
+"name": "Аль-Фуркан",
+"meaning": "Различение",
+"arabic": "الفرقان",
+"ayahs": 77,
+"type": "meccan"
+},
+{
+"n": 26,
+"name": "Аш-Шуара",
+"meaning": "Поэты",
+"arabic": "الشعراء",
+"ayahs": 227,
+"type": "meccan"
+},
+{
+"n": 27,
+"name": "Ан-Намль",
+"meaning": "Муравьи",
+"arabic": "النمل",
+"ayahs": 93,
+"type": "meccan"
+},
+{
+"n": 28,
+"name": "Аль-Касас",
+"meaning": "Рассказ",
+"arabic": "القصص",
+"ayahs": 88,
+"type": "meccan"
+},
+{
+"n": 29,
+"name": "Аль-Анкабут",
+"meaning": "Паук",
+"arabic": "العنكبوت",
+"ayahs": 69,
+"type": "meccan"
+},
+{
+"n": 30,
+"name": "Ар-Рум",
+"meaning": "Римляне",
+"arabic": "الروم",
+"ayahs": 60,
+"type": "meccan"
+},
+{
+"n": 31,
+"name": "Лукман",
+"meaning": "Лукман",
+"arabic": "لقمان",
+"ayahs": 34,
+"type": "meccan"
+},
+{
+"n": 32,
+"name": "Ас-Саджда",
+"meaning": "Земной поклон",
+"arabic": "السجدة",
+"ayahs": 30,
+"type": "meccan"
+},
+{
+"n": 33,
+"name": "Аль-Ахзаб",
+"meaning": "Союзники",
+"arabic": "الأحزاب",
+"ayahs": 73,
+"type": "medinan"
+},
+{
+"n": 34,
+"name": "Саба",
+"meaning": "Саба",
+"arabic": "سبإ",
+"ayahs": 54,
+"type": "meccan"
+},
+{
+"n": 35,
+"name": "Фатыр",
+"meaning": "Творец",
+"arabic": "فاطر",
+"ayahs": 45,
+"type": "meccan"
+},
+{
+"n": 36,
+"name": "Ясин",
+"meaning": "Ясин",
+"arabic": "يس",
+"ayahs": 83,
+"type": "meccan"
+},
+{
+"n": 37,
+"name": "Ас-Саффат",
+"meaning": "Выстроившиеся в ряды",
+"arabic": "الصافات",
+"ayahs": 182,
+"type": "meccan"
+},
+{
+"n": 38,
+"name": "Сад",
+"meaning": "Сад",
+"arabic": "ص",
+"ayahs": 88,
+"type": "meccan"
+},
+{
+"n": 39,
+"name": "Аз-Зумар",
+"meaning": "Толпы",
+"arabic": "الزمر",
+"ayahs": 75,
+"type": "meccan"
+},
+{
+"n": 40,
+"name": "Гафир",
+"meaning": "Прощающий",
+"arabic": "غافر",
+"ayahs": 85,
+"type": "meccan"
+},
+{
+"n": 41,
+"name": "Фуссылят",
+"meaning": "Разъяснены",
+"arabic": "فصلت",
+"ayahs": 54,
+"type": "meccan"
+},
+{
+"n": 42,
+"name": "Аш-Шура",
+"meaning": "Совет",
+"arabic": "الشورى",
+"ayahs": 53,
+"type": "meccan"
+},
+{
+"n": 43,
+"name": "Аз-Зухруф",
+"meaning": "Украшения",
+"arabic": "الزخرف",
+"ayahs": 89,
+"type": "meccan"
+},
+{
+"n": 44,
+"name": "Ад-Духан",
+"meaning": "Дым",
+"arabic": "الدخان",
+"ayahs": 59,
+"type": "meccan"
+},
+{
+"n": 45,
+"name": "Аль-Джасия",
+"meaning": "Коленопреклонённые",
+"arabic": "الجاثية",
+"ayahs": 37,
+"type": "meccan"
+},
+{
+"n": 46,
+"name": "Аль-Ахкаф",
+"meaning": "Барханы",
+"arabic": "الأحقاف",
+"ayahs": 35,
+"type": "meccan"
+},
+{
+"n": 47,
+"name": "Мухаммад",
+"meaning": "Мухаммад",
+"arabic": "محمد",
+"ayahs": 38,
+"type": "medinan"
+},
+{
+"n": 48,
+"name": "Аль-Фатх",
+"meaning": "Победа",
+"arabic": "الفتح",
+"ayahs": 29,
+"type": "medinan"
+},
+{
+"n": 49,
+"name": "Аль-Худжурат",
+"meaning": "Комнаты",
+"arabic": "الحجرات",
+"ayahs": 18,
+"type": "medinan"
+},
+{
+"n": 50,
+"name": "Каф",
+"meaning": "Каф",
+"arabic": "ق",
+"ayahs": 45,
+"type": "meccan"
+},
+{
+"n": 51,
+"name": "Аз-Зарият",
+"meaning": "Рассеивающие",
+"arabic": "الذاريات",
+"ayahs": 60,
+"type": "meccan"
+},
+{
+"n": 52,
+"name": "Ат-Тур",
+"meaning": "Гора",
+"arabic": "الطور",
+"ayahs": 49,
+"type": "meccan"
+},
+{
+"n": 53,
+"name": "Ан-Наджм",
+"meaning": "Звезда",
+"arabic": "النجم",
+"ayahs": 62,
+"type": "meccan"
+},
+{
+"n": 54,
+"name": "Аль-Камар",
+"meaning": "Луна",
+"arabic": "القمر",
+"ayahs": 55,
+"type": "meccan"
+},
+{
+"n": 55,
+"name": "Ар-Рахман",
+"meaning": "Милостивый",
+"arabic": "الرحمن",
+"ayahs": 78,
+"type": "medinan"
+},
+{
+"n": 56,
+"name": "Аль-Вакиа",
+"meaning": "Событие",
+"arabic": "الواقعة",
+"ayahs": 96,
+"type": "meccan"
+},
+{
+"n": 57,
+"name": "Аль-Хадид",
+"meaning": "Железо",
+"arabic": "الحديد",
+"ayahs": 29,
+"type": "medinan"
+},
+{
+"n": 58,
+"name": "Аль-Муджадаля",
+"meaning": "Препирательство",
+"arabic": "المجادلة",
+"ayahs": 22,
+"type": "medinan"
+},
+{
+"n": 59,
+"name": "Аль-Хашр",
+"meaning": "Сбор",
+"arabic": "الحشر",
+"ayahs": 24,
+"type": "medinan"
+},
+{
+"n": 60,
+"name": "Аль-Мумтахана",
+"meaning": "Испытуемая",
+"arabic": "الممتحنة",
+"ayahs": 13,
+"type": "medinan"
+},
+{
+"n": 61,
+"name": "Ас-Сафф",
+"meaning": "Ряд",
+"arabic": "الصف",
+"ayahs": 14,
+"type": "medinan"
+},
+{
+"n": 62,
+"name": "Аль-Джумуа",
+"meaning": "Пятница",
+"arabic": "الجمعة",
+"ayahs": 11,
+"type": "medinan"
+},
+{
+"n": 63,
+"name": "Аль-Мунафикун",
+"meaning": "Лицемеры",
+"arabic": "المنافقون",
+"ayahs": 11,
+"type": "medinan"
+},
+{
+"n": 64,
+"name": "Ат-Тагабун",
+"meaning": "Взаимный обман",
+"arabic": "التغابن",
+"ayahs": 18,
+"type": "medinan"
+},
+{
+"n": 65,
+"name": "Ат-Талак",
+"meaning": "Развод",
+"arabic": "الطلاق",
+"ayahs": 12,
+"type": "medinan"
+},
+{
+"n": 66,
+"name": "Ат-Тахрим",
+"meaning": "Запрещение",
+"arabic": "التحريم",
+"ayahs": 12,
+"type": "medinan"
+},
+{
+"n": 67,
+"name": "Аль-Мульк",
+"meaning": "Власть",
+"arabic": "الملك",
+"ayahs": 30,
+"type": "meccan"
+},
+{
+"n": 68,
+"name": "Аль-Калям",
+"meaning": "Письменная трость",
+"arabic": "القلم",
+"ayahs": 52,
+"type": "meccan"
+},
+{
+"n": 69,
+"name": "Аль-Хакка",
+"meaning": "Неизбежное",
+"arabic": "الحاقة",
+"ayahs": 52,
+"type": "meccan"
+},
+{
+"n": 70,
+"name": "Аль-Мааридж",
+"meaning": "Ступени",
+"arabic": "المعارج",
+"ayahs": 44,
+"type": "meccan"
+},
+{
+"n": 71,
+"name": "Нух",
+"meaning": "Нух",
+"arabic": "نوح",
+"ayahs": 28,
+"type": "meccan"
+},
+{
+"n": 72,
+"name": "Аль-Джинн",
+"meaning": "Джинны",
+"arabic": "الجن",
+"ayahs": 28,
+"type": "meccan"
+},
+{
+"n": 73,
+"name": "Аль-Муззаммиль",
+"meaning": "Закутавшийся",
+"arabic": "المزمل",
+"ayahs": 20,
+"type": "meccan"
+},
+{
+"n": 74,
+"name": "Аль-Муддассир",
+"meaning": "Завернувшийся",
+"arabic": "المدثر",
+"ayahs": 56,
+"type": "meccan"
+},
+{
+"n": 75,
+"name": "Аль-Кияма",
+"meaning": "Воскресение",
+"arabic": "القيامة",
+"ayahs": 40,
+"type": "meccan"
+},
+{
+"n": 76,
+"name": "Аль-Инсан",
+"meaning": "Человек",
+"arabic": "الانسان",
+"ayahs": 31,
+"type": "medinan"
+},
+{
+"n": 77,
+"name": "Аль-Мурсалят",
+"meaning": "Посылаемые",
+"arabic": "المرسلات",
+"ayahs": 50,
+"type": "meccan"
+},
+{
+"n": 78,
+"name": "Ан-Наба",
+"meaning": "Весть",
+"arabic": "النبإ",
+"ayahs": 40,
+"type": "meccan"
+},
+{
+"n": 79,
+"name": "Ан-Назиат",
+"meaning": "Вырывающие",
+"arabic": "النازعات",
+"ayahs": 46,
+"type": "meccan"
+},
+{
+"n": 80,
+"name": "Абаса",
+"meaning": "Нахмурился",
+"arabic": "عبس",
+"ayahs": 42,
+"type": "meccan"
+},
+{
+"n": 81,
+"name": "Ат-Таквир",
+"meaning": "Скручивание",
+"arabic": "التكوير",
+"ayahs": 29,
+"type": "meccan"
+},
+{
+"n": 82,
+"name": "Аль-Инфитар",
+"meaning": "Раскалывание",
+"arabic": "الإنفطار",
+"ayahs": 19,
+"type": "meccan"
+},
+{
+"n": 83,
+"name": "Аль-Мутаффифин",
+"meaning": "Обвешивающие",
+"arabic": "المطففين",
+"ayahs": 36,
+"type": "meccan"
+},
+{
+"n": 84,
+"name": "Аль-Иншикак",
+"meaning": "Разверзнется",
+"arabic": "الإنشقاق",
+"ayahs": 25,
+"type": "meccan"
+},
+{
+"n": 85,
+"name": "Аль-Бурудж",
+"meaning": "Созвездия",
+"arabic": "البروج",
+"ayahs": 22,
+"type": "meccan"
+},
+{
+"n": 86,
+"name": "Ат-Тарик",
+"meaning": "Ночной путник",
+"arabic": "الطارق",
+"ayahs": 17,
+"type": "meccan"
+},
+{
+"n": 87,
+"name": "Аль-Аля",
+"meaning": "Всевышний",
+"arabic": "الأعلى",
+"ayahs": 19,
+"type": "meccan"
+},
+{
+"n": 88,
+"name": "Аль-Гашия",
+"meaning": "Покрывающее",
+"arabic": "الغاشية",
+"ayahs": 26,
+"type": "meccan"
+},
+{
+"n": 89,
+"name": "Аль-Фаджр",
+"meaning": "Заря",
+"arabic": "الفجر",
+"ayahs": 30,
+"type": "meccan"
+},
+{
+"n": 90,
+"name": "Аль-Баляд",
+"meaning": "Город",
+"arabic": "البلد",
+"ayahs": 20,
+"type": "meccan"
+},
+{
+"n": 91,
+"name": "Аш-Шамс",
+"meaning": "Солнце",
+"arabic": "الشمس",
+"ayahs": 15,
+"type": "meccan"
+},
+{
+"n": 92,
+"name": "Аль-Лейль",
+"meaning": "Ночь",
+"arabic": "الليل",
+"ayahs": 21,
+"type": "meccan"
+},
+{
+"n": 93,
+"name": "Ад-Духа",
+"meaning": "Утро",
+"arabic": "الضحى",
+"ayahs": 11,
+"type": "meccan"
+},
+{
+"n": 94,
+"name": "Аш-Шарх",
+"meaning": "Раскрытие",
+"arabic": "الشرح",
+"ayahs": 8,
+"type": "meccan"
+},
+{
+"n": 95,
+"name": "Ат-Тин",
+"meaning": "Смоковница",
+"arabic": "التين",
+"ayahs": 8,
+"type": "meccan"
+},
+{
+"n": 96,
+"name": "Аль-Алак",
+"meaning": "Сгусток",
+"arabic": "العلق",
+"ayahs": 19,
+"type": "meccan"
+},
+{
+"n": 97,
+"name": "Аль-Кадр",
+"meaning": "Предопределение",
+"arabic": "القدر",
+"ayahs": 5,
+"type": "meccan"
+},
+{
+"n": 98,
+"name": "Аль-Баййина",
+"meaning": "Ясное знамение",
+"arabic": "البينة",
+"ayahs": 8,
+"type": "medinan"
+},
+{
+"n": 99,
+"name": "Аз-Зальзаля",
+"meaning": "Землетрясение",
+"arabic": "الزلزلة",
+"ayahs": 8,
+"type": "medinan"
+},
+{
+"n": 100,
+"name": "Аль-Адият",
+"meaning": "Скачущие",
+"arabic": "العاديات",
+"ayahs": 11,
+"type": "meccan"
+},
+{
+"n": 101,
+"name": "Аль-Кариа",
+"meaning": "Великое бедствие",
+"arabic": "القارعة",
+"ayahs": 11,
+"type": "meccan"
+},
+{
+"n": 102,
+"name": "Ат-Такасур",
+"meaning": "Страсть к приумножению",
+"arabic": "التكاثر",
+"ayahs": 8,
+"type": "meccan"
+},
+{
+"n": 103,
+"name": "Аль-Аср",
+"meaning": "Время",
+"arabic": "العصر",
+"ayahs": 3,
+"type": "meccan"
+},
+{
+"n": 104,
+"name": "Аль-Хумаза",
+"meaning": "Хулитель",
+"arabic": "الهمزة",
+"ayahs": 9,
+"type": "meccan"
+},
+{
+"n": 105,
+"name": "Аль-Филь",
+"meaning": "Слон",
+"arabic": "الفيل",
+"ayahs": 5,
+"type": "meccan"
+},
+{
+"n": 106,
+"name": "Курайш",
+"meaning": "Курайшиты",
+"arabic": "قريش",
+"ayahs": 4,
+"type": "meccan"
+},
+{
+"n": 107,
+"name": "Аль-Маун",
+"meaning": "Подаяние",
+"arabic": "الماعون",
+"ayahs": 7,
+"type": "meccan"
+},
+{
+"n": 108,
+"name": "Аль-Каусар",
+"meaning": "Изобилие",
+"arabic": "الكوثر",
+"ayahs": 3,
+"type": "meccan"
+},
+{
+"n": 109,
+"name": "Аль-Кафирун",
+"meaning": "Неверующие",
+"arabic": "الكافرون",
+"ayahs": 6,
+"type": "meccan"
+},
+{
+"n": 110,
+"name": "Ан-Наср",
+"meaning": "Помощь",
+"arabic": "النصر",
+"ayahs": 3,
+"type": "medinan"
+},
+{
+"n": 111,
+"name": "Аль-Масад",
+"meaning": "Пальмовые волокна",
+"arabic": "المسد",
+"ayahs": 5,
+"type": "meccan"
+},
+{
+"n": 112,
+"name": "Аль-Ихляс",
+"meaning": "Искренность",
+"arabic": "الإخلاص",
+"ayahs": 4,
+"type": "meccan"
+},
+{
+"n": 113,
+"name": "Аль-Фаляк",
+"meaning": "Рассвет",
+"arabic": "الفلق",
+"ayahs": 5,
+"type": "meccan"
+},
+{
+"n": 114,
+"name": "Ан-Нас",
+"meaning": "Люди",
+"arabic": "الناس",
+"ayahs": 6,
+"type": "meccan"
+}
+]

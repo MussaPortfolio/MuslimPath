@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Путь</string>
+    <string name="channel_reminders">Напоминания об обучении</string>
+    <string name="channel_reminders_desc">Мягкие напоминания продолжить обучение</string>
+</resources>
