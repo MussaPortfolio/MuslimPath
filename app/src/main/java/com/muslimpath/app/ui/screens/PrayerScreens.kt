@@ -51,9 +51,11 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
@@ -81,6 +83,7 @@ import com.muslimpath.app.data.PrayerSettings
 import com.muslimpath.app.data.UserState
 import com.muslimpath.app.data.zoneId
 import com.muslimpath.app.data.withCity
+import com.muslimpath.app.notifications.Adhan
 import com.muslimpath.app.notifications.PrayerAlarms
 import com.muslimpath.app.ui.Nav
 import com.muslimpath.app.ui.components.AppCard
@@ -313,6 +316,7 @@ fun PrayerTimesScreen(vm: AppViewModel, state: UserState, nav: Nav) {
                     )
                 }
             }
+            AdhanSetting(s, vm)
 
             if (official) {
                 VSpace(16)
@@ -511,4 +515,54 @@ private suspend fun placeName(context: Context, loc: Location): String? = withCo
         Geocoder(context, Locale.forLanguageTag("ru")).getFromLocation(loc.latitude, loc.longitude, 1)
             ?.firstOrNull()?.let { it.locality ?: it.subAdminArea ?: it.adminArea }
     }.getOrNull()
+}
+
+/** "Азан" switch with a preview; the adhan plays when the time comes, never with the early reminder. */
+@Composable
+private fun AdhanSetting(s: PrayerSettings, vm: AppViewModel) {
+    val context = LocalContext.current
+    val available = remember { Adhan.available(context) }
+    var preview by remember { mutableStateOf<android.media.MediaPlayer?>(null) }
+    DisposableEffect(Unit) { onDispose { preview?.release() } }
+    fun stopPreview() { preview?.release(); preview = null }
+
+    VSpace(12)
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Column(Modifier.weight(1f)) {
+            Text("Азан", style = MaterialTheme.typography.titleMedium)
+            Text(
+                when {
+                    !available -> "Запись азана пока не добавлена в приложение"
+                    s.notifyBeforeMin > 0 -> "Прозвучит, когда наступит время, — после напоминания за ${s.notifyBeforeMin} мин"
+                    else -> "Прозвучит, когда наступит время намаза"
+                },
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Switch(
+            checked = s.adhan && available,
+            enabled = available,
+            onCheckedChange = { on -> vm.updatePrayer { it.copy(adhan = on) } },
+        )
+    }
+    if (available) {
+        TextButton(onClick = {
+            if (preview != null) return@TextButton stopPreview()
+            val asset = Adhan.asset(context, Prayer.DHUHR) ?: return@TextButton
+            preview = runCatching {
+                android.media.MediaPlayer().apply {
+                    context.assets.openFd(asset).use { setDataSource(it.fileDescriptor, it.startOffset, it.length) }
+                    setOnCompletionListener { stopPreview() }
+                    prepare()
+                    start()
+                }
+            }.getOrNull()
+        }) { Text(if (preview != null) "Остановить" else "Прослушать") }
+        Text(
+            "В беззвучном режиме и при вибрации азан не звучит — придёт обычное оповещение. Остановить азан можно кнопкой в уведомлении.",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
 }

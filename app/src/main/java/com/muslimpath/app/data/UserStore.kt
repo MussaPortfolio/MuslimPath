@@ -59,6 +59,7 @@ class UserStore(context: Context) {
             put("prayer", JSONObject().put("source", s.prayer.source.name).put("place", s.prayer.placeName).put("lat", s.prayer.lat).put("lon", s.prayer.lon)
                 .put("zone", s.prayer.zone).put("method", s.prayer.method.name).put("school", s.prayer.school.name)
                 .put("notify", JSONArray(s.prayer.notify.map { it.name })).put("before", s.prayer.notifyBeforeMin)
+                .put("adhan", s.prayer.adhan)
                 .put("adj", JSONObject(s.prayer.adjustments.mapKeys { it.key.name } as Map<*, *>)))
             put("quran", JSONObject().put("sura", s.quran.lastSura).put("ayah", s.quran.lastAyah)
                 .put("bookmarks", JSONArray(s.quran.bookmarks)).put("mode", s.quran.mode.name).put("tr", s.quran.translationId).put("reciter", s.quran.reciterId))
@@ -105,6 +106,7 @@ class UserStore(context: Context) {
                         school = runCatching { AsrSchool.valueOf(p.optString("school")) }.getOrDefault(AsrSchool.HANAFI),
                         notify = p.optJSONArray("notify")?.strings()?.mapNotNull { n -> runCatching { Prayer.valueOf(n) }.getOrNull() }?.toSet() ?: emptySet(),
                         notifyBeforeMin = p.optInt("before", 0),
+                        adhan = p.optBoolean("adhan", false),
                         adjustments = p.optJSONObject("adj")?.let { a ->
                             a.keys().asSequence().mapNotNull { k -> runCatching { Prayer.valueOf(k) to a.getInt(k) }.getOrNull() }.toMap()
                         } ?: emptyMap(),

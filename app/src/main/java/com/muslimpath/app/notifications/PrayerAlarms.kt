@@ -42,34 +42,50 @@ object PrayerAlarms {
     fun canScheduleExact(context: Context): Boolean =
         Build.VERSION.SDK_INT < 31 || context.getSystemService(AlarmManager::class.java).canScheduleExactAlarms()
 
+    /**
+     * One scheduled moment: [early] is the reminder [PrayerSettings.notifyBeforeMin] minutes ahead,
+     * otherwise it fires when the time comes (and may play the adhan).
+     */
+    data class Alarm(val prayer: Prayer, val time: ZonedDateTime, val early: Boolean) {
+        fun triggerAt(s: PrayerSettings): ZonedDateTime = if (early) time.minusMinutes(s.notifyBeforeMin.toLong()) else time
+    }
+
     /** Next notification moment for the given settings, or null if notifications are off. */
-    fun nextAlarm(s: PrayerSettings, now: ZonedDateTime = ZonedDateTime.now(s.zoneId())): Pair<Prayer, ZonedDateTime>? {
+    fun nextAlarm(s: PrayerSettings, now: ZonedDateTime = ZonedDateTime.now(s.zoneId())): Alarm? {
         if (!s.hasLocation || s.notify.isEmpty()) return null
         val today = now.toLocalDate()
         return (0L..2L).asSequence()
             .mapNotNull { PrayerCalculator.day(s, today.plusDays(it)) }
-            .flatMap { d -> d.times.entries.asSequence().filter { it.key in s.notify }.map { it.key to it.value } }
-            .map { (p, t) -> p to t }
-            .firstOrNull { (_, t) -> t.minusMinutes(s.notifyBeforeMin.toLong()).isAfter(now) }
+            .flatMap { d -> d.times.entries.asSequence().filter { it.key in s.notify } }
+            .flatMap { (p, t) ->
+                // With an early reminder the on-time alarm is only needed for the adhan.
+                listOfNotNull(
+                    Alarm(p, t, early = true).takeIf { s.notifyBeforeMin > 0 },
+                    Alarm(p, t, early = false).takeIf { s.notifyBeforeMin == 0 || s.adhan },
+                ).asSequence()
+            }
+            .firstOrNull { it.triggerAt(s).isAfter(now) }
     }
 
     fun reschedule(context: Context) {
         com.muslimpath.app.data.OfficialSchedules.init(context)
+        // Widgets depend on exactly the same inputs as the alarms, so they are redrawn here too.
+        com.muslimpath.app.widgets.PrayerWidgets.update(context)
         val am = context.getSystemService(AlarmManager::class.java)
         val settings = UserStore(context).state.value.prayer
         val next = nextAlarm(settings)
-        val pending = { prayer: Prayer?, time: ZonedDateTime? ->
+        val pending = { alarm: Alarm? ->
             val intent = Intent(context, PrayerAlarmReceiver::class.java)
-            if (prayer != null && time != null) intent.putExtra("prayer", prayer.name).putExtra("time", time.toInstant().toEpochMilli())
+            if (alarm != null) intent.putExtra("prayer", alarm.prayer.name)
+                .putExtra("time", alarm.time.toInstant().toEpochMilli()).putExtra("early", alarm.early)
             PendingIntent.getBroadcast(context, REQUEST, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         }
         if (next == null) {
-            am.cancel(pending(null, null))
+            am.cancel(pending(null))
             return
         }
-        val (prayer, time) = next
-        val triggerAt = time.minusMinutes(settings.notifyBeforeMin.toLong()).toInstant().toEpochMilli()
-        val pi = pending(prayer, time)
+        val triggerAt = next.triggerAt(settings).toInstant().toEpochMilli()
+        val pi = pending(next)
         if (canScheduleExact(context)) {
             am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, pi)
         } else {
@@ -79,19 +95,10 @@ object PrayerAlarms {
     }
 
     fun show(context: Context, prayer: Prayer, time: ZonedDateTime, beforeMin: Int) {
-        if (Build.VERSION.SDK_INT >= 33 &&
-            ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
-        ) return
+        if (!canNotify(context)) return
         ensureChannel(context)
-        val hhmm = time.format(DateTimeFormatter.ofPattern("HH:mm"))
-        val title = if (beforeMin > 0) "Скоро ${prayer.title} — в $hhmm" else "Время намаза ${prayer.title}"
-        val text = if (beforeMin > 0) "Через $beforeMin мин наступит время намаза." else "Наступило время намаза ($hhmm)."
-        val open = PendingIntent.getActivity(
-            context, prayer.ordinal,
-            Intent(context, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                .putExtra("open", "prayer"),
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
-        )
+        val (title, text) = texts(prayer, time, beforeMin)
+        val open = openPrayer(context, prayer)
         val n = NotificationCompat.Builder(context, CHANNEL)
             .setSmallIcon(R.drawable.ic_stat_path)
             .setContentTitle(title)
@@ -101,20 +108,44 @@ object PrayerAlarms {
             .setContentIntent(open)
             .setAutoCancel(true)
             .build()
-        NotificationManagerCompat.from(context).notify(100 + prayer.ordinal, n)
+        NotificationManagerCompat.from(context).notify(notificationId(prayer), n)
     }
+
+    fun notificationId(prayer: Prayer) = 100 + prayer.ordinal
+
+    fun canNotify(context: Context) = Build.VERSION.SDK_INT < 33 ||
+        ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+
+    fun texts(prayer: Prayer, time: ZonedDateTime, beforeMin: Int): Pair<String, String> {
+        val hhmm = time.format(DateTimeFormatter.ofPattern("HH:mm"))
+        return if (beforeMin > 0) "Скоро ${prayer.title} — в $hhmm" to "Через $beforeMin мин наступит время намаза."
+        else "Время намаза ${prayer.title}" to "Наступило время намаза ($hhmm)."
+    }
+
+    fun openPrayer(context: Context, prayer: Prayer): PendingIntent = PendingIntent.getActivity(
+        context, prayer.ordinal,
+        Intent(context, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            .putExtra("open", "prayer"),
+        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+    )
 }
 
 class PrayerAlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val prayer = intent.getStringExtra("prayer")?.let { runCatching { Prayer.valueOf(it) }.getOrNull() }
         val time = intent.getLongExtra("time", 0L)
+        val early = intent.getBooleanExtra("early", false)
         val settings = UserStore(context).state.value.prayer
         if (prayer != null && time > 0 && prayer in settings.notify) {
             val at = java.time.Instant.ofEpochMilli(time).atZone(settings.zoneId())
+            val fired = if (early) at.minusMinutes(settings.notifyBeforeMin.toLong()) else at
             // Skip stale alarms (e.g. delivered long after the device was off).
-            if (java.time.Duration.between(at, ZonedDateTime.now(settings.zoneId())).toMinutes() < 30) {
-                PrayerAlarms.show(context, prayer, at, settings.notifyBeforeMin)
+            if (java.time.Duration.between(fired, ZonedDateTime.now(settings.zoneId())).toMinutes() < 30) {
+                when {
+                    early -> PrayerAlarms.show(context, prayer, at, settings.notifyBeforeMin)
+                    settings.adhan && Adhan.start(context, prayer, at) -> Unit
+                    else -> PrayerAlarms.show(context, prayer, at, 0)
+                }
             }
         }
         PrayerAlarms.reschedule(context)

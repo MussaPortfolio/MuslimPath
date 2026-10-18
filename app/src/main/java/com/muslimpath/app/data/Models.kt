@@ -149,6 +149,7 @@ data class PrayerSettings(
     val school: AsrSchool = AsrSchool.HANAFI,
     val notify: Set<Prayer> = emptySet(),
     val notifyBeforeMin: Int = 0,
+    val adhan: Boolean = false, // play the adhan when the time comes (not with the early reminder)
     val adjustments: Map<Prayer, Int> = emptyMap(), // manual corrections in minutes, to match the local mosque
 ) {
     val hasLocation get() = lat != null && lon != null

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="widget_bg">#FBF6EA</color>
+    <color name="widget_text">#0F4A32</color>
+    <color name="widget_muted">#55605A</color>
+    <color name="widget_accent">#0F4A32</color>
+    <color name="widget_on_accent">#FBF6EA</color>
+    <color name="widget_gold">#E2C27A</color>
+    <dimen name="widget_radius">24dp</dimen>
+    <string name="widget_next_label">Следующий намаз</string>
+    <string name="widget_next_desc">Ближайший намаз и сколько до него осталось</string>
+    <string name="widget_day_label">Намаз на сегодня</string>
+    <string name="widget_day_desc">Все времена намаза на сегодня</string>
+</resources>

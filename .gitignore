@@ -13,3 +13,7 @@ keystore/
 keystore.properties
 *.jks
 *.keystore
+
+# JVM crash logs
+replay_pid*.log
+hs_err_pid*.log
