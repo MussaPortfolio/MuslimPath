@@ -7,16 +7,23 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Bookmark
 import androidx.compose.material.icons.outlined.DeleteForever
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Forum
@@ -51,6 +58,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.muslimpath.app.AppViewModel
 import com.muslimpath.app.BuildConfig
+import com.muslimpath.app.NAME_MAX
 import com.muslimpath.app.data.ReminderFrequency
 import com.muslimpath.app.data.UserState
 import com.muslimpath.app.ui.Nav
@@ -72,10 +80,18 @@ fun ProfileScreen(vm: AppViewModel, state: UserState, nav: Nav) {
     val route = vm.content.route(state.routeId)
     val next = vm.nextLesson(state)
     var confirmDelete by rememberSaveable { mutableStateOf(false) }
+    var editName by rememberSaveable { mutableStateOf(false) }
 
     ListScreen(title = "Профиль") {
         item {
-            Text(state.name.ifBlank { "Гость" }, style = MaterialTheme.typography.headlineSmall)
+            Row(
+                Modifier.clickable(onClickLabel = "Изменить имя") { editName = true }.padding(vertical = 2.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(state.name.ifBlank { "Гость" }, style = MaterialTheme.typography.headlineSmall)
+                Spacer(Modifier.width(8.dp))
+                Icon(Icons.Outlined.Edit, null, Modifier.size(20.dp), tint = MaterialTheme.colorScheme.outline)
+            }
             Text(
                 email ?: "Гостевой режим — прогресс хранится на этом устройстве",
                 style = MaterialTheme.typography.bodySmall,
@@ -131,6 +147,8 @@ fun ProfileScreen(vm: AppViewModel, state: UserState, nav: Nav) {
         }
     }
 
+    if (editName) NameDialog(state.name, onDismiss = { editName = false }, onSave = { vm.setName(it); editName = false })
+
     if (confirmDelete) AlertDialog(
         onDismissRequest = { confirmDelete = false },
         title = { Text("Удалить все данные?") },
@@ -146,6 +164,30 @@ fun ProfileScreen(vm: AppViewModel, state: UserState, nav: Nav) {
             }
         },
         dismissButton = { TextButton(onClick = { confirmDelete = false }) { Text("Отмена") } },
+    )
+}
+
+/** Name used in the greeting; may be left empty (shown as «Гость»). */
+@Composable
+private fun NameDialog(current: String, onDismiss: () -> Unit, onSave: (String) -> Unit) {
+    var value by rememberSaveable { mutableStateOf(current) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Как к вам обращаться?") },
+        text = {
+            OutlinedTextField(
+                value = value,
+                onValueChange = { value = it.take(NAME_MAX) },
+                label = { Text("Имя") },
+                placeholder = { Text("Например, Амина") },
+                supportingText = { Text("Можно оставить пустым") },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words, imeAction = ImeAction.Done),
+                keyboardActions = androidx.compose.foundation.text.KeyboardActions(onDone = { onSave(value) }),
+            )
+        },
+        confirmButton = { TextButton(onClick = { onSave(value) }) { Text("Сохранить") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Отмена") } },
     )
 }
 

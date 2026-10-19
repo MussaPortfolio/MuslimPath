@@ -141,19 +141,16 @@ fun NextPrayerCard(state: UserState, nav: Nav) {
                     Text("Время намаза", style = MaterialTheme.typography.titleSmall)
                     Text("Укажите город, чтобы видеть расписание", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 } else {
+                    // Just the prayer and the time left; the full timetable is one tap away.
                     val next = PrayerCalculator.next(s, now)
+                    Text(next?.first?.title ?: "Время намаза", style = MaterialTheme.typography.titleSmall)
                     Text(
-                        next?.let { "${it.first.title} в ${it.second.format(HHMM)}" } ?: "Время намаза",
-                        style = MaterialTheme.typography.titleSmall,
-                    )
-                    Text(
-                        listOfNotNull(next?.let { formatCountdown(Duration.between(now, it.second)) }, s.placeName).joinToString(" · "),
+                        next?.let { formatCountdown(Duration.between(now, it.second)) } ?: "Нет данных на сегодня",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }
-            Icon(Icons.AutoMirrored.Outlined.ArrowForward, null)
         }
     }
 }

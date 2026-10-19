@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.material.icons.automirrored.outlined.MenuBook
@@ -42,8 +41,6 @@ import com.muslimpath.app.ui.Nav
 import com.muslimpath.app.ui.Tab
 import com.muslimpath.app.ui.components.AppCard
 import com.muslimpath.app.ui.components.IconBadge
-import com.muslimpath.app.ui.components.LessonRow
-import com.muslimpath.app.ui.components.LessonState
 import com.muslimpath.app.ui.components.ListScreen
 import com.muslimpath.app.ui.components.SectionTitle
 import com.muslimpath.app.ui.components.VSpace
@@ -70,8 +67,6 @@ fun HomeScreen(vm: AppViewModel, state: UserState, nav: Nav) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             VSpace(16)
-            NextPrayerCard(state, nav)
-            VSpace(12)
         }
 
         // Next step — the main purpose of the home screen (ТЗ 4.1).
@@ -159,14 +154,28 @@ fun HomeScreen(vm: AppViewModel, state: UserState, nav: Nav) {
             }
         }
 
-        if (answered > 0) item {
+        // Order: route, prayer, Quran, help.
+        item {
             VSpace(12)
-            AppCard(onClick = nav::questions) {
+            NextPrayerCard(state, nav)
+        }
+
+        item {
+            VSpace(12)
+            val last = state.quran.lastSura?.let { vm.quranRepo.suras[it - 1] }
+            // Opens the sura where the reader stopped, or the sura list if nothing was read yet.
+            AppCard(onClick = { if (last != null) nav.sura(last.number, state.quran.lastAyah) else nav.quran() }) {
                 Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-                    IconBadge(Icons.Outlined.Forum)
+                    IconBadge(Icons.AutoMirrored.Outlined.MenuBook)
                     Spacer(Modifier.width(12.dp))
-                    Text("На ваш вопрос пришёл ответ", style = MaterialTheme.typography.titleSmall, modifier = Modifier.weight(1f))
-                    Icon(Icons.AutoMirrored.Outlined.ArrowForward, null)
+                    Column(Modifier.weight(1f)) {
+                        Text("Коран", style = MaterialTheme.typography.titleSmall)
+                        Text(
+                            last?.name ?: "Арабский текст и перевод смыслов",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
                 }
             }
         }
@@ -183,43 +192,15 @@ fun HomeScreen(vm: AppViewModel, state: UserState, nav: Nav) {
             }
         }
 
-        item {
+        if (answered > 0) item {
             VSpace(12)
-            val last = state.quran.lastSura?.let { vm.quranRepo.suras[it - 1] }
-            AppCard(onClick = nav::quran) {
+            AppCard(onClick = nav::questions) {
                 Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-                    IconBadge(Icons.AutoMirrored.Outlined.MenuBook)
+                    IconBadge(Icons.Outlined.Forum)
                     Spacer(Modifier.width(12.dp))
-                    Column(Modifier.weight(1f)) {
-                        Text("Коран", style = MaterialTheme.typography.titleSmall)
-                        Text(
-                            last?.let { "Вы остановились: ${it.name}, аят ${state.quran.lastAyah}" } ?: "Арабский текст и перевод смыслов",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
+                    Text("На ваш вопрос пришёл ответ", style = MaterialTheme.typography.titleSmall, modifier = Modifier.weight(1f))
                     Icon(Icons.AutoMirrored.Outlined.ArrowForward, null)
                 }
-            }
-        }
-
-        if (route != null) {
-            item {
-                SectionTitle("Ваш маршрут") {
-                    TextButton(onClick = { nav.route(route.id) }) { Text("Все уроки") }
-                }
-            }
-            val upcoming = route.lessonIds.mapNotNull(content::lesson).filter { it.id !in state.completed }.drop(1).take(3)
-            items(upcoming, key = { it.id }) { l ->
-                LessonRow(l, LessonState.AVAILABLE, onClick = { nav.lesson(l.id) }, saved = l.id in state.saved)
-            }
-        }
-
-        val saved = state.saved.mapNotNull(content::lesson).take(3)
-        if (saved.isNotEmpty()) {
-            item { SectionTitle("Сохранённое") { TextButton(onClick = nav::saved) { Text("Все") } } }
-            items(saved, key = { "s" + it.id }) { l ->
-                LessonRow(l, if (l.id in state.completed) LessonState.DONE else LessonState.AVAILABLE, onClick = { nav.lesson(l.id) }, saved = true)
             }
         }
     }

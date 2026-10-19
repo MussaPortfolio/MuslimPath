@@ -24,6 +24,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.UUID
 
+/** Longest name shown in the greeting and the profile. */
+const val NAME_MAX = 40
+
 class AppViewModel(app: Application) : AndroidViewModel(app) {
 
     val content: Content = ContentRepository(app).load()
@@ -130,6 +133,8 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     fun finishOnboarding(routeId: String?, name: String) = store.edit {
         it.copy(onboardingDone = true, routeId = routeId ?: it.routeId, name = name.trim())
     }
+
+    fun setName(name: String) = store.edit { it.copy(name = name.trim().take(NAME_MAX)) }
 
     fun selectRoute(routeId: String) = store.edit { it.copy(routeId = routeId) }
 
