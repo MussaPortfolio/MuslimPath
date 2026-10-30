@@ -82,12 +82,11 @@ fun IconBadge(icon: ImageVector, modifier: Modifier = Modifier, container: Color
 
 @Composable
 fun AppCard(modifier: Modifier = Modifier, onClick: (() -> Unit)? = null, content: @Composable () -> Unit) {
-    val colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest)
-    val border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+    val colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
     if (onClick != null) {
-        Card(onClick = onClick, modifier = modifier.fillMaxWidth(), colors = colors, border = border) { content() }
+        Card(onClick = onClick, modifier = modifier.fillMaxWidth(), colors = colors) { content() }
     } else {
-        Card(modifier = modifier.fillMaxWidth(), colors = colors, border = border) { content() }
+        Card(modifier = modifier.fillMaxWidth(), colors = colors) { content() }
     }
 }
 

@@ -1,6 +1,9 @@
 package com.muslimpath.app.ui
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AutoStories
 import androidx.compose.material.icons.automirrored.outlined.MenuBook
@@ -21,7 +24,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -54,6 +59,7 @@ import com.muslimpath.app.ui.screens.QuranListScreen
 import com.muslimpath.app.ui.screens.ReciterScreen
 import com.muslimpath.app.ui.screens.PrayerTimesScreen
 import com.muslimpath.app.ui.screens.PrayerCityScreen
+import com.muslimpath.app.ui.screens.QiblaScreen
 
 enum class Tab(val route: String, val label: String, val icon: ImageVector) {
     Home("home", "Главная", Icons.Outlined.Home),
@@ -82,6 +88,7 @@ class Nav(private val nav: NavHostController) {
     fun reciters() = nav.navigate("reciters")
     fun prayer() = tab(Tab.Prayer)
     fun prayerCity() = nav.navigate("prayerCity")
+    fun qibla() = nav.navigate("qibla")
     fun tab(tab: Tab) = nav.navigate(tab.route) {
         popUpTo(nav.graph.findStartDestination().id) { saveState = true }
         launchSingleTop = true
@@ -118,7 +125,14 @@ fun AppRoot(vm: AppViewModel = viewModel(), openRequest: String? = null, onOpenH
     Scaffold(
         snackbarHost = { SnackbarHost(snackbar) },
         bottomBar = {
-            if (showBar) NavigationBar(containerColor = MaterialTheme.colorScheme.surfaceContainerLow) {
+            if (showBar) androidx.compose.material3.Surface(
+                shape = MaterialTheme.shapes.large,
+                color = MaterialTheme.colorScheme.surfaceContainerLow,
+                shadowElevation = 6.dp,
+                modifier = Modifier
+                    .windowInsetsPadding(WindowInsets.navigationBars)
+                    .padding(start = 12.dp, end = 12.dp, bottom = 8.dp),
+            ) { NavigationBar(containerColor = Color.Transparent, windowInsets = WindowInsets(0)) {
                 Tab.entries.forEach { tab ->
                     NavigationBarItem(
                         selected = destination?.hierarchy?.any { it.route == tab.route } == true,
@@ -132,7 +146,7 @@ fun AppRoot(vm: AppViewModel = viewModel(), openRequest: String? = null, onOpenH
                         ),
                     )
                 }
-            }
+            } }
         },
     ) { padding ->
         NavHost(navController, startDestination = Tab.Home.route, modifier = Modifier.padding(bottom = padding.calculateBottomPadding())) {
@@ -165,6 +179,7 @@ fun AppRoot(vm: AppViewModel = viewModel(), openRequest: String? = null, onOpenH
             composable("quranBookmarks") { QuranBookmarksScreen(vm, state, nav) }
             composable("reciters") { ReciterScreen(vm, state, nav) }
             composable("prayerCity") { PrayerCityScreen(vm, nav) }
+            composable("qibla") { QiblaScreen(state, nav) }
         }
     }
 }

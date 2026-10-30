@@ -10,7 +10,6 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -23,6 +22,7 @@ val Green100 = Color(0xFFDCE9E1)
 val Gold = Color(0xFFB98A2E)
 val GoldLight = Color(0xFFE2C27A)
 val Cream = Color(0xFFFBF6EA)
+val Paper = Color(0xFFF5F4EF)
 val CreamDark = Color(0xFFF1E7CF)
 val Ink = Color(0xFF1E2622)
 
@@ -36,14 +36,14 @@ private val Light = lightColorScheme(
     secondaryContainer = CreamDark,
     onSecondaryContainer = Color(0xFF4A3712),
     tertiary = Green600,
-    background = Cream,
+    background = Paper,
     onBackground = Ink,
-    surface = Cream,
+    surface = Paper,
     onSurface = Ink,
     surfaceVariant = CreamDark,
     onSurfaceVariant = Color(0xFF55605A),
     surfaceContainerLowest = Color.White,
-    surfaceContainerLow = Color(0xFFFFFCF5),
+    surfaceContainerLow = Color.White,
     surfaceContainer = Color(0xFFF6EFDF),
     surfaceContainerHigh = Color(0xFFF1E9D6),
     outline = Color(0xFFB9B29F),
@@ -67,20 +67,20 @@ private val Dark = darkColorScheme(
     surfaceVariant = Color(0xFF26302B),
     onSurfaceVariant = Color(0xFFC2C9C3),
     surfaceContainerLowest = Color(0xFF0A100D),
-    surfaceContainerLow = Color(0xFF151D19),
+    surfaceContainerLow = Color(0xFF1A2420),
     surfaceContainer = Color(0xFF19221E),
     surfaceContainerHigh = Color(0xFF212B26),
     outline = Color(0xFF6E7872),
     outlineVariant = Color(0xFF38423D),
 )
 
-private val Serif = FontFamily.Serif
 private val base = Typography()
 private val AppTypography = Typography(
-    displaySmall = base.displaySmall.copy(fontFamily = Serif, fontWeight = FontWeight.SemiBold),
-    headlineMedium = base.headlineMedium.copy(fontFamily = Serif, fontWeight = FontWeight.SemiBold),
-    headlineSmall = base.headlineSmall.copy(fontFamily = Serif, fontWeight = FontWeight.SemiBold),
-    titleLarge = base.titleLarge.copy(fontFamily = Serif, fontWeight = FontWeight.SemiBold),
+    displaySmall = base.displaySmall.copy(fontWeight = FontWeight.Bold, letterSpacing = (-0.5).sp),
+    headlineMedium = base.headlineMedium.copy(fontWeight = FontWeight.Bold, letterSpacing = (-0.5).sp),
+    headlineSmall = base.headlineSmall.copy(fontWeight = FontWeight.Bold, letterSpacing = (-0.25).sp),
+    titleLarge = base.titleLarge.copy(fontWeight = FontWeight.Bold, letterSpacing = (-0.25).sp),
+    titleSmall = base.titleSmall.copy(fontWeight = FontWeight.SemiBold),
     bodyLarge = base.bodyLarge.copy(fontSize = 17.sp, lineHeight = 26.sp),
     bodyMedium = base.bodyMedium.copy(fontSize = 15.sp, lineHeight = 22.sp),
 )
@@ -89,9 +89,9 @@ private val AppTypography = Typography(
 val ArabicStyle = TextStyle(fontSize = 28.sp, lineHeight = 52.sp)
 
 private val AppShapes = Shapes(
-    small = RoundedCornerShape(10.dp),
-    medium = RoundedCornerShape(16.dp),
-    large = RoundedCornerShape(24.dp),
+    small = RoundedCornerShape(12.dp),
+    medium = RoundedCornerShape(20.dp),
+    large = RoundedCornerShape(28.dp),
 )
 
 @Composable

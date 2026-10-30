@@ -12,6 +12,8 @@ import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,6 +24,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
@@ -67,6 +71,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
@@ -92,6 +97,7 @@ import com.muslimpath.app.ui.components.IconBadge
 import com.muslimpath.app.ui.components.ListScreen
 import com.muslimpath.app.ui.components.SectionTitle
 import com.muslimpath.app.ui.components.VSpace
+import com.muslimpath.app.ui.theme.GoldLight
 import com.muslimpath.app.ui.theme.Green600
 import com.muslimpath.app.ui.theme.Green800
 import kotlinx.coroutines.Dispatchers
@@ -127,32 +133,57 @@ fun rememberNow(settings: PrayerSettings): ZonedDateTime {
     return remember(tick, settings.zone) { ZonedDateTime.now(settings.zoneId()) }
 }
 
-/** Compact card for the home screen. */
+/** Half-width home tile: label on top, the one value worth seeing, then a short hint. */
 @Composable
-fun NextPrayerCard(state: UserState, nav: Nav) {
-    val s = state.prayer
-    val now = rememberNow(s)
-    AppCard(onClick = nav::prayer) {
-        Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-            IconBadge(Icons.Outlined.Schedule)
-            Spacer(Modifier.width(12.dp))
-            Column(Modifier.weight(1f)) {
-                if (!s.hasLocation) {
-                    Text("Время намаза", style = MaterialTheme.typography.titleSmall)
-                    Text("Укажите город, чтобы видеть расписание", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                } else {
-                    // Just the prayer and the time left; the full timetable is one tap away.
-                    val next = PrayerCalculator.next(s, now)
-                    Text(next?.first?.title ?: "Время намаза", style = MaterialTheme.typography.titleSmall)
-                    Text(
-                        next?.let { formatCountdown(Duration.between(now, it.second)) } ?: "Нет данных на сегодня",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
+fun HomeTile(
+    icon: ImageVector,
+    label: String,
+    value: String?,
+    hint: String,
+    onClick: () -> Unit,
+    container: Color,
+    content: Color,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        onClick = onClick,
+        modifier = modifier,
+        shape = MaterialTheme.shapes.large,
+        colors = CardDefaults.cardColors(containerColor = container, contentColor = content),
+    ) {
+        Column(Modifier.padding(16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(icon, null, Modifier.size(20.dp))
+                Spacer(Modifier.width(8.dp))
+                Text(label, style = MaterialTheme.typography.titleSmall, maxLines = 1)
             }
+            VSpace(14)
+            if (value != null) Text(value, style = MaterialTheme.typography.headlineMedium, maxLines = 1)
+            Text(hint, style = MaterialTheme.typography.bodySmall, color = content.copy(alpha = 0.75f))
         }
     }
+}
+
+@Composable
+fun NextPrayerCard(state: UserState, nav: Nav, modifier: Modifier = Modifier) {
+    val s = state.prayer
+    val now = rememberNow(s)
+    // Just the prayer and the time left; the full timetable is one tap away.
+    val next = if (s.hasLocation) PrayerCalculator.next(s, now) else null
+    HomeTile(
+        icon = Icons.Outlined.Schedule,
+        label = next?.first?.title ?: "Намаз",
+        value = next?.second?.format(HHMM),
+        hint = when {
+            !s.hasLocation -> "Укажите город"
+            next != null -> formatCountdown(Duration.between(now, next.second))
+            else -> "Нет данных на сегодня"
+        },
+        onClick = nav::prayer,
+        container = MaterialTheme.colorScheme.primaryContainer,
+        content = MaterialTheme.colorScheme.onPrimaryContainer,
+        modifier = modifier,
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -203,9 +234,9 @@ fun PrayerTimesScreen(vm: AppViewModel, state: UserState, nav: Nav) {
 
         if (dayOffset == 0L && next != null) item {
             VSpace(12)
-            Card(colors = CardDefaults.cardColors(containerColor = Green800), modifier = Modifier.fillMaxWidth()) {
+            Card(shape = MaterialTheme.shapes.large, colors = CardDefaults.cardColors(containerColor = Green800), modifier = Modifier.fillMaxWidth()) {
                 Column(Modifier.background(androidx.compose.ui.graphics.Brush.linearGradient(listOf(Green800, Green600))).fillMaxWidth().padding(20.dp)) {
-                    Text("Следующий намаз", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.secondaryContainer)
+                    Text("Следующий намаз", style = MaterialTheme.typography.labelLarge, color = GoldLight)
                     Text("${next.first.title} · ${next.second.format(HHMM)}", style = MaterialTheme.typography.headlineMedium, color = Color.White)
                     Text(formatCountdown(Duration.between(now, next.second)), style = MaterialTheme.typography.bodyMedium, color = Color.White.copy(alpha = 0.85f))
                 }
@@ -243,13 +274,16 @@ fun PrayerTimesScreen(vm: AppViewModel, state: UserState, nav: Nav) {
             }
         }
 
-        if (day != null) items(day.times.entries.toList(), key = { it.key.name }) { (prayer, time) ->
+        if (day != null) itemsIndexed(day.times.entries.toList(), key = { _, e -> e.key.name }) { i, (prayer, time) ->
             val isNext = dayOffset == 0L && next?.first == prayer && next.second.toLocalDate() == date
             val enabled = prayer in s.notify
+            // Rows read as one grouped card: only the outer corners are fully rounded.
+            val top = if (i == 0) 20.dp else 4.dp
+            val bottom = if (i == day.times.size - 1) 20.dp else 4.dp
             Surface(
-                color = if (isNext) MaterialTheme.colorScheme.primaryContainer else Color.Transparent,
-                shape = MaterialTheme.shapes.medium,
-                modifier = Modifier.fillMaxWidth(),
+                color = if (isNext) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerLow,
+                shape = RoundedCornerShape(top, top, bottom, bottom),
+                modifier = Modifier.fillMaxWidth().padding(vertical = 1.dp),
             ) {
                 Row(Modifier.padding(horizontal = 14.dp, vertical = 6.dp).height(44.dp), verticalAlignment = Alignment.CenterVertically) {
                     Text(
@@ -304,12 +338,12 @@ fun PrayerTimesScreen(vm: AppViewModel, state: UserState, nav: Nav) {
             }
 
             SectionTitle("Оповещать")
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 listOf(0, 5, 10, 15, 30).forEach { m ->
                     FilterChip(
                         selected = s.notifyBeforeMin == m,
                         onClick = { vm.updatePrayer { it.copy(notifyBeforeMin = m) } },
-                        label = { Text(if (m == 0) "Вовремя" else "за $m") },
+                        label = { Text(if (m == 0) "Вовремя" else "за $m мин") },
                     )
                 }
             }

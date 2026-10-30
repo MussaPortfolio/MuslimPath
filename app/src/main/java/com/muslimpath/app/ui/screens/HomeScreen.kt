@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -13,7 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowForward
-import androidx.compose.material.icons.automirrored.outlined.MenuBook
+import androidx.compose.material.icons.outlined.Explore
 import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.automirrored.outlined.HelpOutline
 import androidx.compose.material3.Button
@@ -23,18 +25,21 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.muslimpath.app.AppViewModel
 import com.muslimpath.app.R
+import com.muslimpath.app.data.Qibla
 import com.muslimpath.app.data.TicketStatus
 import com.muslimpath.app.data.UserState
 import com.muslimpath.app.ui.Nav
@@ -44,8 +49,10 @@ import com.muslimpath.app.ui.components.IconBadge
 import com.muslimpath.app.ui.components.ListScreen
 import com.muslimpath.app.ui.components.SectionTitle
 import com.muslimpath.app.ui.components.VSpace
+import com.muslimpath.app.ui.theme.GoldLight
 import com.muslimpath.app.ui.theme.Green600
 import com.muslimpath.app.ui.theme.Green800
+import kotlin.math.roundToInt
 
 @Composable
 fun HomeScreen(vm: AppViewModel, state: UserState, nav: Nav) {
@@ -73,17 +80,25 @@ fun HomeScreen(vm: AppViewModel, state: UserState, nav: Nav) {
         item {
             Card(
                 modifier = Modifier.fillMaxWidth(),
+                shape = MaterialTheme.shapes.large,
                 colors = CardDefaults.cardColors(containerColor = Green800),
             ) {
                 Column(
-                    Modifier.background(Brush.linearGradient(listOf(Green800, Green600))).padding(20.dp)
+                    Modifier
+                        .background(Brush.linearGradient(listOf(Green800, Green600)))
+                        .drawBehind {
+                            val glow = androidx.compose.ui.graphics.Color.White.copy(alpha = 0.06f)
+                            drawCircle(glow, size.height * 0.55f, Offset(size.width, size.height))
+                            drawCircle(glow, size.height * 0.35f, Offset(size.width, size.height))
+                        }
+                        .padding(20.dp)
                 ) {
                     Row(verticalAlignment = Alignment.Top) {
                         Column(Modifier.weight(1f)) {
                             Text(
                                 route?.title ?: "Маршрут не выбран",
                                 style = MaterialTheme.typography.labelLarge,
-                                color = MaterialTheme.colorScheme.secondaryContainer,
+                                color = GoldLight,
                             )
                             VSpace(6)
                             Text(
@@ -109,7 +124,7 @@ fun HomeScreen(vm: AppViewModel, state: UserState, nav: Nav) {
                         LinearProgressIndicator(
                             progress = { routeDone / route.lessonIds.size.coerceAtLeast(1).toFloat() },
                             modifier = Modifier.fillMaxWidth().height(6.dp),
-                            color = MaterialTheme.colorScheme.secondary,
+                            color = GoldLight,
                             trackColor = androidx.compose.ui.graphics.Color.White.copy(alpha = 0.25f),
                             drawStopIndicator = {},
                         )
@@ -123,7 +138,10 @@ fun HomeScreen(vm: AppViewModel, state: UserState, nav: Nav) {
                     VSpace(14)
                     Button(
                         onClick = { if (next != null) nav.lesson(next.id) else nav.tab(Tab.Learn) },
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = androidx.compose.ui.graphics.Color.White,
+                            contentColor = Green800,
+                        ),
                     ) {
                         Text(
                             when {
@@ -154,39 +172,38 @@ fun HomeScreen(vm: AppViewModel, state: UserState, nav: Nav) {
             }
         }
 
-        // Order: route, prayer, Quran, help.
+        // Order: route, prayer + compass side by side, help.
         item {
             VSpace(12)
-            NextPrayerCard(state, nav)
-        }
-
-        item {
-            VSpace(12)
-            val last = state.quran.lastSura?.let { vm.quranRepo.suras[it - 1] }
-            // Opens the sura where the reader stopped, or the sura list if nothing was read yet.
-            AppCard(onClick = { if (last != null) nav.sura(last.number, state.quran.lastAyah) else nav.quran() }) {
-                Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-                    IconBadge(Icons.AutoMirrored.Outlined.MenuBook)
-                    Spacer(Modifier.width(12.dp))
-                    Column(Modifier.weight(1f)) {
-                        Text("Коран", style = MaterialTheme.typography.titleSmall)
-                        Text(
-                            last?.name ?: "Арабский текст и перевод смыслов",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                }
+            val lat = state.prayer.lat
+            val lon = state.prayer.lon
+            Row(Modifier.height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                NextPrayerCard(state, nav, Modifier.weight(1f).fillMaxHeight())
+                val located = lat != null && lon != null
+                HomeTile(
+                    icon = Icons.Outlined.Explore,
+                    label = "Компас",
+                    value = if (located) "${Qibla.bearing(lat!!, lon!!).roundToInt() % 360}°" else null,
+                    hint = if (located) "направление киблы" else "Укажите город",
+                    onClick = nav::qibla,
+                    container = MaterialTheme.colorScheme.secondaryContainer,
+                    content = MaterialTheme.colorScheme.onSecondaryContainer,
+                    modifier = Modifier.weight(1f).fillMaxHeight(),
+                )
             }
         }
 
         item {
             SectionTitle("Нужна помощь?")
+            val helpColors = ButtonDefaults.filledTonalButtonColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                contentColor = MaterialTheme.colorScheme.onSurface,
+            )
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                OutlinedButton(onClick = { nav.ask() }, modifier = Modifier.weight(1f)) {
+                FilledTonalButton(onClick = { nav.ask() }, modifier = Modifier.weight(1f).height(52.dp), colors = helpColors) {
                     Icon(Icons.Outlined.Forum, null, Modifier.size(18.dp)); Spacer(Modifier.width(6.dp)); Text("Задать вопрос")
                 }
-                OutlinedButton(onClick = nav::questions, modifier = Modifier.weight(1f)) {
+                FilledTonalButton(onClick = nav::questions, modifier = Modifier.weight(1f).height(52.dp), colors = helpColors) {
                     Icon(Icons.AutoMirrored.Outlined.HelpOutline, null, Modifier.size(18.dp)); Spacer(Modifier.width(6.dp)); Text("Ответы")
                 }
             }

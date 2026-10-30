@@ -138,17 +138,21 @@ class QuranAudio private constructor(context: Context) {
     private fun url(reciter: Reciter, sura: Int, ayah: Int) =
         "https://everyayah.com/data/${reciter.folder}/%03d%03d.mp3".format(sura, ayah)
 
-    /** Plays [sura] from [fromAyah] to the end. Before ayah 1 the basmala is recited (except suras 1 and 9). */
+    /**
+     * Plays [sura] from [fromAyah] to the end. Before ayah 1 the basmala is recited (except suras 1 and 9).
+     * The whole sura is queued, so "previous" can reach the ayahs before [fromAyah].
+     */
     fun play(reciter: Reciter, sura: Int, ayahCount: Int, fromAyah: Int = 1) {
         val items = buildList {
-            if (fromAyah == 1 && sura != 1 && sura != 9) {
+            if (sura != 1 && sura != 9) {
                 add(MediaItem.Builder().setMediaId("$sura:0").setUri(url(reciter, 1, 1)).build())
             }
-            for (a in fromAyah..ayahCount) add(MediaItem.Builder().setMediaId("$sura:$a").setUri(url(reciter, sura, a)).build())
+            for (a in 1..ayahCount) add(MediaItem.Builder().setMediaId("$sura:$a").setUri(url(reciter, sura, a)).build())
         }
+        val start = if (fromAyah == 1) 0 else items.indexOfFirst { it.mediaId == "$sura:$fromAyah" }
         val p = player()
         _state.value = _state.value.copy(error = null)
-        p.setMediaItems(items)
+        p.setMediaItems(items, start, C.TIME_UNSET)
         p.repeatMode = if (_state.value.repeatAyah) Player.REPEAT_MODE_ONE else Player.REPEAT_MODE_OFF
         p.prepare()
         p.play()
