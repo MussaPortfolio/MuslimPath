@@ -198,7 +198,6 @@ fun SuraScreen(vm: AppViewModel, state: UserState, nav: Nav, suraNumber: Int, st
 
     LaunchedEffect(ayahs) {
         if (ayahs == null) return@LaunchedEffect
-        if (startAyah > 1) listState.scrollToItem(startAyah.coerceAtMost(ayahs.size))
         snapshotFlow { listState.firstVisibleItemIndex }
             .distinctUntilChanged()
             .debounce(400)
@@ -206,8 +205,14 @@ fun SuraScreen(vm: AppViewModel, state: UserState, nav: Nav, suraNumber: Int, st
     }
 
     // Follow the recitation: keep the ayah being read on screen.
-    LaunchedEffect(playingAyah) {
-        if (playingAyah != null && audio.playing) listState.animateScrollToItem(playingAyah)
+    // An ayah usually starts while still buffering, so wait for playback; each ayah is followed once.
+    var followedAyah by remember { mutableStateOf<Int?>(null) }
+    LaunchedEffect(playingAyah, audio.playing, ayahs != null) {
+        if (playingAyah == null) followedAyah = null
+        else if (audio.playing && ayahs != null && playingAyah != followedAyah) {
+            followedAyah = playingAyah
+            listState.animateScrollToItem(playingAyah)
+        }
     }
 
     val density = LocalDensity.current
